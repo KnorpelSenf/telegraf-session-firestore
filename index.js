@@ -7,8 +7,7 @@ module.exports = (collection, opts) => {
     function getSession(key) {
         return collection.doc(key).get()
             .then((snapshot) => {
-                if (!snapshot.exists) return undefined
-                return snapshot.data()
+                return snapshot.exists && snapshot.data()
             })
     }
 
