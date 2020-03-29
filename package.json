@@ -1,6 +1,6 @@
 {
   "name": "telegraf-session-firestore",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Google Firestore based session middleware for telegraf.js",
   "main": "index.js",
   "scripts": {
@@ -15,5 +15,6 @@
   "bugs": {
     "url": "https://github.com/KnorpelSenf/telegraf-session-firestore/issues"
   },
-  "homepage": "https://github.com/KnorpelSenf/telegraf-session-firestore#readme"
+  "homepage": "https://github.com/KnorpelSenf/telegraf-session-firestore#readme",
+  "keywords": ["telegram", "telegraf", "session", "middleware", "firestore"]
 }
