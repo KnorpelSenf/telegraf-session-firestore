@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "charset": "utf8",
+        "declaration": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "keyofStringsOnly": true,
+        "module": "commonjs",
+        "newLine": "lf",
+        "outDir": "./built/",
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noUnusedParameters": true,
+        "removeComments": false,
+        "sourceMap": true,
+        "strict": true,
+        "target": "es5",
+    },
+}
