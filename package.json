@@ -4,8 +4,8 @@
   "description": "Google Firestore based session middleware for telegraf.js",
   "main": "built/index.js",
   "types": "built/index.d.ts",
-  "prepublish": "tsc",
   "scripts": {
+    "prepublish": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
