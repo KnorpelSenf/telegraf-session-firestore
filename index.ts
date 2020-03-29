@@ -3,7 +3,7 @@ import type { ContextMessageUpdate, Middleware } from 'telegraf'
 
 export interface Options<C> {
     property?: string;
-    getSessionKey?: (ctx: C) => string;
+    getSessionKey?: (ctx: C) => string | undefined;
 }
 
 export default function <C extends ContextMessageUpdate>(collection: CollectionReference, opts?: Options<C>): Middleware<C> {
