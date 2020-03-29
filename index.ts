@@ -1,15 +1,15 @@
 import type { CollectionReference } from '@google-cloud/firestore'
-import type { Context } from 'telegraf'
+import type { ContextMessageUpdate, Middleware } from 'telegraf'
 
-export interface Options {
-    property: string;
-    getSessionKey: (ctx: Context) => string;
+export interface Options<C> {
+    property?: string;
+    getSessionKey?: (ctx: C) => string;
 }
 
-export default (collection: CollectionReference, opts?: Options) => {
+export default function <C extends ContextMessageUpdate>(collection: CollectionReference, opts?: Options<C>): Middleware<C> {
     const options = Object.assign({
         property: 'session',
-        getSessionKey: (ctx: Context) => ctx.from && ctx.chat && `${ctx.from.id}-${ctx.chat.id}`
+        getSessionKey: (ctx: C) => ctx.from && ctx.chat && `${ctx.from.id}-${ctx.chat.id}`
     }, opts)
 
     async function getSession(key: string) {
@@ -24,17 +24,17 @@ export default (collection: CollectionReference, opts?: Options) => {
         return collection.doc(key).set(session)
     }
 
-    return async (ctx: Context, next: (() => any)) => {
+    return async (ctx, next) => {
         const key = options.getSessionKey(ctx)
         if (key === undefined) {
-            return next()
+            return next?.()
         }
         let session = await getSession(key) || {}
         Object.defineProperty(ctx, options.property, {
             get: function () { return session },
             set: function (newValue) { session = Object.assign({}, newValue) }
         })
-        await next()
+        await next?.()
         return saveSession(key, session)
     }
 }
