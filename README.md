@@ -5,7 +5,7 @@ Google Firestore based session middleware for telegraf.js. Heavily inspired by h
 ## Installation
 
 ```bash
-npm install --save telegraf-session-firestore
+npm install telegraf-session-firestore --save
 ```
 
 ## Example
@@ -28,4 +28,34 @@ bot.on('text', (ctx, next) => {
   return next()
 })
 bot.hears('/stats', ({ reply, session, from }) => reply(`${session.counter} messages from ${from.username}`))
-bot.startPolling()```
+bot.startPolling()
+```
+
+## API
+
+### Options
+
+* `property`: context property name (default: `session`)
+* `getSessionKey`: session key resolver function (default: `(ctx) => any`)
+
+Default implementation of `getSessionKey`:
+
+```js
+function getSessionKey(ctx) {
+  if (!ctx.from || !ctx.chat) {
+    return
+  }
+  return `${ctx.from.id}-${ctx.chat.id}`
+}
+```
+
+### Destroying a session
+
+To destroy a session simply set it to `null`.
+
+```js
+bot.on('text', (ctx) => {
+  ctx.session = null
+})
+
+```
