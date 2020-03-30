@@ -1,11 +1,11 @@
 {
   "name": "telegraf-session-firestore",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "Google Firestore based session middleware for telegraf.js",
   "main": "built/index.js",
   "types": "built/index.d.ts",
   "scripts": {
-    "prepublish": "tsc",
+    "prepare": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

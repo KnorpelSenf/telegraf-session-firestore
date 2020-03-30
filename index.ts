@@ -14,7 +14,7 @@ export default function <C extends ContextMessageUpdate>(collection: CollectionR
 
     async function getSession(key: string) {
         const snapshot = await collection.doc(key).get()
-        return snapshot.exists && snapshot.data()
+        return snapshot.data()
     }
 
     function saveSession(key: string, session: any) {
