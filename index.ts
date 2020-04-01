@@ -70,7 +70,14 @@ export default function <C extends ContextMessageUpdate>(collection: CollectionR
             },
             set: function (newValue) { session = Object.assign({}, newValue) }
         })
-        await next?.()
-        return saveSession(key, session)
+
+        const n = await next?.()
+
+        if (immediate)
+            return saveSession(key, session)
+        else if (sessionP !== undefined)
+            return saveSession(key, await sessionP)
+        else
+            return n
     }
 }
