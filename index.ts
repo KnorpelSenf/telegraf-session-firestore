@@ -4,7 +4,7 @@ import type { ContextMessageUpdate, Middleware } from 'telegraf'
 export interface Options<C> {
     property?: string
     getSessionKey?: (ctx: C) => string | undefined
-    lazy?: boolean | Promise<boolean> | ((ctx: C) => Promise<boolean>)
+    lazy?: boolean | Promise<boolean> | ((ctx: C) => boolean) | ((ctx: C) => Promise<boolean>)
 }
 
 export default function <C extends ContextMessageUpdate>(collection: CollectionReference, opts?: Options<C>): Middleware<C> {
