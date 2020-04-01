@@ -2,9 +2,9 @@ import type { CollectionReference } from '@google-cloud/firestore'
 import type { ContextMessageUpdate, Middleware } from 'telegraf'
 
 export interface Options<C> {
-    property?: string;
-    getSessionKey?: (ctx: C) => string | undefined;
-    lazy?: boolean | Promise<boolean> | ((ctx: C) => Promise<boolean>);
+    property?: string
+    getSessionKey?: (ctx: C) => string | undefined
+    lazy?: boolean | Promise<boolean> | ((ctx: C) => Promise<boolean>)
 }
 
 export default function <C extends ContextMessageUpdate>(collection: CollectionReference, opts?: Options<C>): Middleware<C> {
@@ -44,25 +44,28 @@ export default function <C extends ContextMessageUpdate>(collection: CollectionR
         if (key === undefined) {
             return next?.()
         }
-        // session has type
-        // - C if session data was found in the db
-        // - {} if on session data was found in the db
-        // - undefined if the loading operation is still deferred
-        let session: C | {} | undefined = undefined;
+        // determine if we should wrap the session data into a promise
         const immediate = !await options.lazy(ctx)
-        if (immediate) {
+
+        let session: C | {} | undefined
+        let sessionP: Promise<C | {}> | undefined
+
+        if (immediate)
             session = await getSession(key) || {}
-        }
+
         Object.defineProperty(ctx, options.property, {
             get: function () {
+                // returns either session or sessionP,
                 if (immediate) {
                     return session
                 } else {
-                    return new Promise(async resolve => {
-                        if (session === undefined)
-                            session = await getSession(key) || {}
-                        resolve(session)
-                    })
+                    if (sessionP === undefined)
+                        sessionP = new Promise(async resolve => {
+                            if (session === undefined)
+                                session = await getSession(key) || {}
+                            resolve(session)
+                        })
+                    return sessionP
                 }
             },
             set: function (newValue) { session = Object.assign({}, newValue) }
