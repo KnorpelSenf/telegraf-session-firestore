@@ -55,7 +55,7 @@ export default function <C extends ContextMessageUpdate>(collection: CollectionR
 
         Object.defineProperty(ctx, options.property, {
             get: function () {
-                // returns either session or sessionP,
+                // returns either session or sessionP, depending on laziness
                 if (immediate) {
                     return session
                 } else {
