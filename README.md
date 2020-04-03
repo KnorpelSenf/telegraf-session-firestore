@@ -60,14 +60,14 @@ const db = new Firestore({
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 bot.use(firestoreSession(db.collection('sessions'), { lazy: true }))
-bot.on('text', async (ctx, next) => {
+bot.on('photo', async (ctx, next) => {
   const session = await ctx.session;
   session.counter = session.counter || 0
   session.counter++
   return next()
 })
 bot.hears('/stats', async ({ reply, session, from }) =>
-  reply(`${(await session).counter} messages from ${from.username}`))
+  reply(`already got ${(await session).counter} pics from ${from.username}`))
 bot.startPolling()
 ```
 
@@ -79,7 +79,7 @@ As a result, you only need a fraction of database communication (so you are bill
 Yay.
 
 It is in fact possible to use lazy mode on a per request basis, for instance you could use lazy mode only for groups.
-Simply use:
+Simply pass:
 
 ```js
 bot.use(firestoreSession(db.collection('sessions'), {
