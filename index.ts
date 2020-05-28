@@ -1,13 +1,13 @@
 import type { CollectionReference } from '@google-cloud/firestore'
 import type { ContextMessageUpdate, Middleware } from 'telegraf'
 
-export interface Options<C> {
+interface Options<C> {
     property?: string
     getSessionKey?: (ctx: C) => string | undefined
     lazy?: boolean | Promise<boolean> | ((ctx: C) => boolean) | ((ctx: C) => Promise<boolean>)
 }
 
-export default function <C extends ContextMessageUpdate>(collection: CollectionReference, opts?: Options<C>): Middleware<C> {
+function middleware<C extends ContextMessageUpdate>(collection: CollectionReference, opts?: Options<C>): Middleware<C> {
     const completeOpts = Object.assign({
         property: 'session',
         getSessionKey: (ctx: C) => ctx.from && ctx.chat && `${ctx.from.id}-${ctx.chat.id}`,
@@ -81,3 +81,5 @@ export default function <C extends ContextMessageUpdate>(collection: CollectionR
             return n
     }
 }
+
+export = middleware
