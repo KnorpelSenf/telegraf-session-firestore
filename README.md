@@ -108,7 +108,7 @@ function getSessionKey(ctx) {
 
 ### Destroying a session
 
-To destroy a session simply set it to `undefined` (or another nullish value).
+To destroy a session simply set it to `undefined` (or another falsy value).
 
 ```js
 bot.on('text', ctx => {
