@@ -19,9 +19,9 @@
   },
   "homepage": "https://github.com/KnorpelSenf/telegraf-session-firestore#readme",
   "devDependencies": {
-    "@google-cloud/firestore": "^4.2.0",
+    "@google-cloud/firestore": "^4.4.0",
     "telegraf": "^3.38.0",
-    "typescript": "^4.0.2"
+    "typescript": "^4.0.3"
   },
   "keywords": [
     "telegram",
