@@ -6,6 +6,9 @@ Google Firestore based session middleware for telegraf.js. Loosely based on [the
 
 ```bash
 npm install telegraf-session-firestore --save
+
+# If you still are on telegraf v3, use this:
+npm install telegraf-session-firestore@3 --save
 ```
 
 ## Introduction
