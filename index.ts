@@ -2,28 +2,31 @@ import type { CollectionReference } from '@google-cloud/firestore'
 import type { Context, Middleware } from 'telegraf'
 
 interface Options<C> {
-    property?: string
-    getSessionKey?: (ctx: C) => string | undefined
-    lazy?: boolean | Promise<boolean> | ((ctx: C) => boolean) | ((ctx: C) => Promise<boolean>)
+    getSessionKey: (ctx: C) => string | undefined
+    lazy:
+        | boolean
+        | Promise<boolean>
+        | ((ctx: C) => boolean)
+        | ((ctx: C) => Promise<boolean>)
 }
 
-function middleware<C extends Context>(collection: CollectionReference, opts?: Options<C>): Middleware<C> {
-    const completeOpts = Object.assign({
-        property: 'session',
-        getSessionKey: (ctx: C) => ctx.from && ctx.chat && `${ctx.from.id}-${ctx.chat.id}`,
-        lazy: () => false
-    }, opts)
+function middleware<C extends Context>(
+    collection: CollectionReference,
+    opts?: Partial<Options<C>>
+): Middleware<C> {
+    const DEFAULT_OPTIONS: Options<C> = {
+        getSessionKey: (ctx: C) =>
+            ctx.from && ctx.chat && `${ctx.from.id}-${ctx.chat.id}`,
+        lazy: () => false,
+    }
+    const completeOpts: Options<C> = { ...DEFAULT_OPTIONS, ...opts }
 
-    const options: {
-        property: string, getSessionKey:
-        (ctx: C) => string | undefined,
-        lazy: ((ctx: C) => Promise<boolean>)
-    } = {
-        property: completeOpts.property,
+    const options = {
         getSessionKey: completeOpts.getSessionKey,
-        lazy: async ctx => typeof completeOpts.lazy === 'function'
-            ? completeOpts.lazy(ctx)
-            : completeOpts.lazy
+        lazy: async (ctx: C) =>
+            typeof completeOpts.lazy === 'function'
+                ? completeOpts.lazy(ctx)
+                : completeOpts.lazy,
     }
 
     async function getSession(key: string) {
@@ -32,8 +35,8 @@ function middleware<C extends Context>(collection: CollectionReference, opts?: O
         return snapshot.data() as C | undefined
     }
 
-    function saveSession(key: string, session: any) {
-        if (!session || Object.keys(session).length === 0) {
+    function saveSession(key: string, session: C | {} | undefined) {
+        if (session == null || Object.keys(session).length === 0) {
             return collection.doc(key).delete()
         }
         return collection.doc(key).set(session)
@@ -45,40 +48,39 @@ function middleware<C extends Context>(collection: CollectionReference, opts?: O
             return next?.()
         }
         // determine if we should wrap the session data into a promise
-        const immediate = !await options.lazy(ctx)
+        const immediate = !(await options.lazy(ctx))
 
         let session: C | {} | undefined
         let sessionP: Promise<C | {}> | undefined
 
-        if (immediate)
-            session = await getSession(key) || {}
+        if (immediate) session = (await getSession(key)) || {}
 
-        Object.defineProperty(ctx, options.property, {
-            get: function () {
+        Object.defineProperty(ctx, 'session', {
+            get() {
                 // returns either session or sessionP, depending on laziness
                 if (immediate) {
                     return session
                 } else {
                     if (sessionP === undefined)
+                        // eslint-disable-next-line no-async-promise-executor
                         sessionP = new Promise(async resolve => {
                             if (session === undefined)
-                                session = await getSession(key) || {}
+                                session = (await getSession(key)) || {}
                             resolve(session)
                         })
                     return sessionP
                 }
             },
-            set: function (newValue) { session = Object.assign({}, newValue) }
+            set(newValue) {
+                session = Object.assign({}, newValue)
+            },
         })
 
         const n = await next?.()
 
-        if (immediate)
-            return saveSession(key, session)
-        else if (sessionP !== undefined)
-            return saveSession(key, await sessionP)
-        else
-            return n
+        if (immediate) return saveSession(key, session)
+        else if (sessionP !== undefined) return saveSession(key, await sessionP)
+        else return n
     }
 }
 
