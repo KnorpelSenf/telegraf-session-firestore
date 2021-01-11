@@ -13,7 +13,7 @@ npm install telegraf-session-firestore@3 --save
 
 ## Introduction
 
-This middleware supports two modi, *strict* and *lazy*.
+This middleware supports two modi, _strict_ and _lazy_.
 In strict mode, everything works the way you would expect from a middleware.
 For every request, a Cloud Firestore collection is queried and the session data is provided in a property on the context object.
 The session data can be modified arbitrarily and will be written back to the database afterwards.
@@ -28,18 +28,19 @@ const { Firestore } = require('@google-cloud/firestore')
 const db = new Firestore({
     projectId: 'YOUR_PROJECT_ID',
     keyFilename: 'firestore-keyfile.json',
-});
+})
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 bot.use(firestoreSession(db.collection('sessions')))
 bot.on('photo', (ctx, next) => {
-  const session = ctx.session;
-  session.counter = session.counter || 0
-  session.counter++
-  return next()
+    const session = ctx.session
+    session.counter = session.counter || 0
+    session.counter++
+    return next()
 })
 bot.hears('/stats', ({ reply, session, from }) =>
-  reply(`already got ${session.counter} pics from ${from.username}!`))
+    reply(`already got ${session.counter} pics from ${from.username}!`)
+)
 bot.startPolling()
 ```
 
@@ -59,18 +60,19 @@ const { Firestore } = require('@google-cloud/firestore')
 const db = new Firestore({
     projectId: 'YOUR_PROJECT_ID',
     keyFilename: 'firestore-keyfile.json',
-});
+})
 
 const bot = new Telegraf(process.env.BOT_TOKEN)
 bot.use(firestoreSession(db.collection('sessions'), { lazy: true }))
 bot.on('photo', async (ctx, next) => {
-  const session = await ctx.session;
-  session.counter = session.counter || 0
-  session.counter++
-  return next()
+    const session = await ctx.session
+    session.counter = session.counter || 0
+    session.counter++
+    return next()
 })
 bot.hears('/stats', async ({ reply, session, from }) =>
-  reply(`already got ${(await session).counter} pics from ${from.username}`))
+    reply(`already got ${(await session).counter} pics from ${from.username}`)
+)
 bot.startPolling()
 ```
 
@@ -86,7 +88,7 @@ Simply pass:
 
 ```js
 bot.use(firestoreSession(db.collection('sessions'), {
-  lazy: ctx => ctx.chat.type !== 'private'
+    lazy: ctx => ctx.chat.type !== 'private'
 }))
 ```
 
@@ -94,18 +96,18 @@ bot.use(firestoreSession(db.collection('sessions'), {
 
 ### Options
 
-* `lazy`: flag for lazy mode
-* `property`: context property name (default: `session`)
-* `getSessionKey`: session key resolver function
+- `lazy`: flag for lazy mode
+- `property`: context property name (default: `session`)
+- `getSessionKey`: session key resolver function
 
 Default implementation of `getSessionKey`:
 
 ```js
 function getSessionKey(ctx) {
-  if (!ctx.from || !ctx.chat) {
-    return
-  }
-  return `${ctx.from.id}-${ctx.chat.id}`
+    if (!ctx.from || !ctx.chat) {
+        return
+    }
+    return `${ctx.from.id}-${ctx.chat.id}`
 }
 ```
 
@@ -115,6 +117,6 @@ To destroy a session simply set it to `undefined` (or another falsy value).
 
 ```js
 bot.on('text', ctx => {
-  ctx.session = undefined
+    ctx.session = undefined
 })
 ```
