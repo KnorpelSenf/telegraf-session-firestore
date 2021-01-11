@@ -10,10 +10,11 @@
         "outDir": "./built/",
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
+        "skipLibCheck": true,
         "noUnusedParameters": true,
         "removeComments": false,
         "sourceMap": true,
         "strict": true,
-        "target": "es5",
-    },
+        "target": "es5"
+    }
 }
