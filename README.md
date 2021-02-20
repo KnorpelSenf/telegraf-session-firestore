@@ -111,6 +111,9 @@ function getSessionKey(ctx) {
 }
 ```
 
+Make sure that your bot does not process two updates concurrently that lead to the same session key (e.g. two messages from the same user in the same chat).
+This would cause a race condition between the updates and make you overwrite some of the changes.
+
 ### Destroying a session
 
 To destroy a session simply set it to `undefined` (or another falsy value).
