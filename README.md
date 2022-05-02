@@ -1,5 +1,7 @@
 # telegraf-session-firestore
 
+**NOTE: UNMAINTAINED. I NO LONGER WORK ON THIS, AND I NO LONGER USE TELEGRAF.** I started a new bot framework called [grammY](https://grammy.dev) which has firestore support. Highly recommend to check it out. If you insist to use this project and there is a bug, please submit a PR, and I can merge it, I just won't fix anything myself :)
+
 Google Firestore based session middleware for telegraf.js. Loosely based on [the firebase equivalent](https://github.com/telegraf/telegraf-session-firebase/) but written in TypeScript.
 
 ## Installation
