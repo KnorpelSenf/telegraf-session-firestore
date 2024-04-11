@@ -20,7 +20,7 @@
     },
     "homepage": "https://github.com/KnorpelSenf/telegraf-session-firestore#readme",
     "devDependencies": {
-        "@google-cloud/firestore": "^6.6.1",
+        "@google-cloud/firestore": "^7.6.0",
         "telegraf": "^4.0.0",
         "@typescript-eslint/eslint-plugin": "^4.12.0",
         "@typescript-eslint/parser": "^4.12.0",
